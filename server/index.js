@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
-mongoose.connect('your_mongodb_connection_string', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://eric32301:9Opayd8AfDaKe1PK@thirdshifthub.fntli.mongodb.net/?retryWrites=true&w=majority&appName=ThirdShiftHub', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Schema for storing file metadata
 const fileSchema = new mongoose.Schema({
