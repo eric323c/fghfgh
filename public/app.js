@@ -13,12 +13,18 @@ function fetchFiles() {
 
 // Fetch files initially and after file upload
 fetchFiles();
+
 document.getElementById('uploadForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    fetch('/upload', {
-        method: 'POST',
-        body: formData,
-    })
-    ...
+  event.preventDefault();
+  const formData = new FormData(this);
+  fetch('/upload', {
+      method: 'POST',
+      body: formData,
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log('Upload successful:', data);
+    fetchFiles(); // Reload files list after upload
+  })
+  .catch(error => console.error('Error uploading file:', error));
 });
