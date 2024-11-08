@@ -1,33 +1,31 @@
-// Function to fetch and display uploaded files
-function fetchFiles() {
-  fetch('/files')
-    .then(response => response.json())
-    .then(files => {
-      const container = document.getElementById('filesContainer');
-      container.innerHTML = '';
-      files.forEach(file => {
-        container.innerHTML += `<div>${file.filename} - ${file.size} bytes</div>`;
-      });
+function uploadFile() {
+  const fileInput = document.getElementById('fileInput');
+  const file = fileInput.files[0];
+  if (!file) {
+    alert('Please select a file.');
+    return;
+  }
+
+  // Convert file to Base64
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    const base64File = reader.result;
+
+    // Send Base64 file to the serverless function
+    fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ file: base64File })
     })
-    .catch(error => console.error('Error fetching files:', error));
+    .then(response => response.json())
+    .then(data => {
+      if (data.url) {
+        document.getElementById('output').innerHTML = `<p>Uploaded successfully:</p><img src="${data.url}" alt="Uploaded image" style="max-width:300px;" />`;
+      } else {
+        document.getElementById('output').innerHTML = `<p>Error: ${data.error}</p>`;
+      }
+    })
+    .catch(error => console.error('Error uploading file:', error));
+  };
+  reader.readAsDataURL(file);
 }
-
-// Fetch files initially
-fetchFiles();
-
-// Handle file upload form submission
-document.getElementById('uploadForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  const formData = new FormData(this);
-
-  fetch('/upload', {
-    method: 'POST',
-    body: formData,
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Upload successful:', data);
-    fetchFiles(); // Refresh the file list after upload
-  })
-  .catch(error => console.error('Error uploading file:', error));
-});
