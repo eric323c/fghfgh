@@ -13,3 +13,12 @@ function fetchFiles() {
 
 // Fetch files initially and after file upload
 fetchFiles();
+document.getElementById('uploadForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    fetch('/upload', {
+        method: 'POST',
+        body: formData,
+    })
+    ...
+});
